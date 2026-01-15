@@ -1,0 +1,7 @@
+{
+    "name": "MCP Server for Home Assistant",
+    "content_in_root": false,
+    "zip_release": false,
+    "render_readme": true,
+    "filename": "hacs.json"
+}
