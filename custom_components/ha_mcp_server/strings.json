@@ -1,19 +1,35 @@
 {
-    "config": {
-        "step": {
-            "user": {
-                "title": "MCP Server Configuration",
-                "description": "Configure the connection to your local LLM backend (Ollama, Kobold.cpp, etc.). This allows the AI to manage your system, add-ons, and integrations.",
-                "data": {
-                    "llm_url": "Backend URL (e.g. http://192.168.1.50:11434)",
-                    "llm_provider": "API Provider Type",
-                    "llm_model": "Model Name (e.g. llama3, mistral)"
-                }
-            }
-        },
-        "abort": {
-            "single_instance_allowed": "Only one instance of this integration is allowed."
-        }
-    },
-    "title": "MCP Server"
+    "config": {
+        "step": {
+            "user": {
+                "title": "MCP Server Configuration",
+                "description": "Configure the connection to your local LLM backend (Ollama, Kobold.cpp, etc.). This allows the AI to manage your system, add-ons, and integrations.",
+                "data": {
+                    "llm_url": "Backend URL (e.g. http://192.168.1.50:11434)",
+                    "llm_provider": "API Provider Type",
+                    "llm_model": "Model Name (e.g. llama3, mistral)"
+                }
+            }
+        },
+        "abort": {
+            "single_instance_allowed": "Only one instance of this integration is allowed."
+        }
+    },
+    "options": {
+        "step": {
+            "ide_config": {
+                "title": "IDE Configuration Generator",
+                "description": "Select the URL to use in your IDE (VSCode/Cursor) configuration and (optionally) paste a Long-Lived Access Token to generate the JSON. If you don't paste a token, a placeholder will be used.",
+                "data": {
+                    "url_choice": "Home Assistant URL",
+                    "token": "Long-lived Access Token (Optional)"
+                }
+            },
+            "display_result": {
+                "title": "Generated Configuration",
+                "description": "Copy the JSON below into your IDE's MCP config file (e.g. `claude_desktop_config.json` or VSCode settings).\n\n{config_json}"
+            }
+        }
+    },
+    "title": "MCP Server"
 }
