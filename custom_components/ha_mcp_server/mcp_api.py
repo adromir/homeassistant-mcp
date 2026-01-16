@@ -481,7 +481,188 @@ class HA_MCPServer(Server):
                      },
                      "required": ["query"]
                  }
-            )
+            ),
+            # 16. Automation Management
+            Tool(
+                name="create_automation",
+                description="Create or update an automation (UI-Editable).",
+                inputSchema={
+                    "type": "object",
+                    "properties": {
+                        "alias": {"type": "string"},
+                        "description": {"type": "string"},
+                        "mode": {"type": "string", "default": "single"},
+                        "trigger": {"type": "array", "items": {"type": "object"}},
+                        "condition": {"type": "array", "items": {"type": "object"}},
+                        "action": {"type": "array", "items": {"type": "object"}}
+                    },
+                    "required": ["alias", "trigger", "action"]
+                }
+            ),
+            # 17. Script Management
+            Tool(
+                name="create_script",
+                description="Create or update a script (UI-Editable).",
+                inputSchema={
+                    "type": "object",
+                    "properties": {
+                        "alias": {"type": "string"},
+                        "sequence": {"type": "array", "items": {"type": "object"}},
+                        "mode": {"type": "string", "default": "single"}
+                    },
+                    "required": ["alias", "sequence"]
+                }
+            ),
+            # 18. Helper Management
+            Tool(
+                name="manage_helpers",
+                description="Manage input helpers (boolean, number, etc).",
+                inputSchema={
+                    "type": "object",
+                    "properties": {
+                        "action": {"type": "string", "enum": ["create", "delete"]},
+                        "domain": {"type": "string", "enum": ["input_boolean", "input_text", "input_number", "input_datetime", "input_select"]},
+                        "name": {"type": "string"},
+                        "helper_id": {"type": "string", "description": "ID for deletion"}
+                    },
+                    "required": ["action"]
+                }
+            ),
+            # 19. Integration Management
+            Tool(
+                name="install_integration",
+                description="Start config flow for an integration.",
+                inputSchema={
+                    "type": "object",
+                    "properties": {
+                        "domain": {"type": "string"}
+                    },
+                    "required": ["domain"]
+                }
+            ),
+            # 20. Dashboard Management
+            Tool(
+                name="manage_dashboards",
+                description="Manage Lovelace dashboards (Create/Update Views).",
+                inputSchema={
+                    "type": "object",
+                    "properties": {
+                        "action": {"type": "string", "enum": ["create_view", "update_view"]},
+                        "dashboard_url_path": {"type": "string"},
+                        "view_config": {"type": "object"}
+                    },
+                    "required": ["action", "dashboard_url_path"]
+                }
+            ),
+            # 21. Backup Management
+            Tool(
+                name="manage_backups",
+                description="Create or list backups.",
+                inputSchema={
+                    "type": "object",
+                    "properties": {
+                        "action": {"type": "string", "enum": ["create", "list"]},
+                        "name": {"type": "string", "description": "Backup name"}
+                    },
+                    "required": ["action"]
+                }
+            ),
+            # 22. Blueprint Discovery
+            Tool(
+                name="list_blueprints",
+                description="List available blueprints.",
+                inputSchema={
+                    "type": "object",
+                    "properties": {
+                         "domain": {"type": "string", "enum": ["automation", "script"], "default": "automation"}
+                    }
+                }
+            ),
+            # 23. Config Check
+            Tool(
+                name="check_config",
+                description="Validate configuration.",
+                inputSchema={
+                    "type": "object",
+                    "properties": {}
+                }
+            ),
+             # 24. Service Introspection
+             Tool(
+                 name="list_available_services",
+                 description="List available services and their schemas (arguments/fields).",
+                 inputSchema={
+                     "type": "object",
+                     "properties": {
+                         "domain": {"type": "string", "description": "Optional domain filter (e.g. 'light')"}
+                     }
+                 }
+             ),
+             # 25. Home Topology
+             Tool(
+                 name="get_home_topology",
+                 description="Get a graph of Areas -> Devices -> Entities to understand physical layout.",
+                 inputSchema={
+                     "type": "object",
+                     "properties": {}
+                 }
+             ),
+             # 26. Secrets Manager
+             Tool(
+                 name="manage_secrets",
+                 description="Read keys or set secrets in secrets.yaml.",
+                 inputSchema={
+                     "type": "object",
+                     "properties": {
+                         "action": {"type": "string", "enum": ["list", "set"]},
+                         "key": {"type": "string", "description": "Secret key name (required for set)"},
+                         "value": {"type": "string", "description": "Secret value (required for set)"}
+                     },
+                     "required": ["action"]
+                 }
+             ),
+             # 27. Assist / Conversation Agent
+             Tool(
+                 name="run_conversation_agent",
+                 description="Send a command to Home Assistant's native Assist (NLU) agent.",
+                 inputSchema={
+                     "type": "object",
+                     "properties": {
+                         "text": {"type": "string", "description": "Natural language command (e.g. 'Turn on the kitchen lights')"},
+                         "agent_id": {"type": "string", "description": "Specific Conversation Agent ID (optional)"},
+                         "language": {"type": "string", "default": "en"}
+                     },
+                     "required": ["text"]
+                 }
+             ),
+             # 28. Persistent Notification
+             Tool(
+                 name="send_persistent_notification",
+                 description="Post a persistent notification to the Home Assistant dashboard.",
+                 inputSchema={
+                     "type": "object",
+                     "properties": {
+                         "message": {"type": "string"},
+                         "title": {"type": "string", "default": "MCP Agent"}
+                     },
+                     "required": ["message"]
+                 }
+             ),
+             # 29. Label Management
+             Tool(
+                 name="manage_labels",
+                 description="Manage entity labels (tags).",
+                 inputSchema={
+                     "type": "object",
+                     "properties": {
+                         "action": {"type": "string", "enum": ["list", "create", "delete", "add_to_entity"]},
+                         "name": {"type": "string", "description": "Label name (for create)"},
+                         "label_id": {"type": "string", "description": "Label ID (for delete/add)"},
+                         "entity_id": {"type": "string", "description": "Entity ID (for add)"}
+                     },
+                     "required": ["action"]
+                 }
+             )
         ]
 
     async def _call_tool_impl(self, name: str, arguments: dict) -> list[TextContent | ImageContent | EmbeddedResource]:
